@@ -1,4 +1,33 @@
-node_modules
-build
-mnt
-package-lock.json
+# Node artifacts
+node_modules/
+
+# Build outputs / TS artifacts
+dist/
+build/
+*.tsbuildinfo
+*.js
+*.js.map
+index.d.ts
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Coverage
+coverage/
+.nyc_output/
+
+# IDEs / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Native binaries / prebuilds
+*.node
+prebuilds/
+prebuilds/**
+
+# Packaging / env
+*.tgz
+.env
