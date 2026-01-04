@@ -130,9 +130,184 @@ const OpcodesAndDefaults = new Map([
     op: binding.op_rmdir
   }]
 ])
+type Cb = (code: number|null, value?: any) => undefined
+type defaultArgs = Array<any>
+export interface Ops {
+  [name: string]: (...args: defaultArgs) => void
+  init?: (cb: Cb) => void
+  error?: (...args: defaultArgs) => void
+  access?: (path: string, mode: any, cb: Cb) => void
+  statfs?: (path: string, cb: Cb) => void
+  fgetattr?: (path: string, fd: number, cb: Cb) => void
+  getattr?: (path: string, cb: Cb) => void
+  flush?: (path: string, fd: number, cb: Cb) => void
+  fsync?: (path: string, fd: number, datasync: any, cb: Cb) => void
+  fsyncdir?: (path: string, fd: number, datasync: any, cb: Cb) => void
+  readdir?: (path: string, cb: Cb) => void
+  truncate?: (path: string, size: number, cb: Cb) => void
+  ftruncate?: (path: string, fd: number, size: number, cb: Cb) => void
+  utimens?: (path: string, atime: number, mtime: number, cb: Cb) => void
+  readlink?: (path: string, cb: Cb) => void
+  chown?: (path: string, uid: number, gid: number, cb: Cb) => void
+  chmod?: (path: string, mode: any, cb: Cb) => void
+  mknod?: (path: string, mode: any, dev: any, cb: Cb) => void
+  setxattr?: (path: string, name: string, value: Buffer, position: number, flags: number, cb: Cb) => void
+  getxattr?: (path: string, name: string, position: number, cb: Cb) => void
+  listxattr?: (path: string, cb: Cb) => void
+  removexattr?: (path: string, name: string, cb: Cb) => void
+  open?: (path: string, flags: number, cb: Cb) => void
+  opendir?: (path: string, flags: number, cb: Cb) => void
+  read?: (path: string, fd: number, buffer: Buffer, lenght: number, position: number, cb: Cb) => void
+  write?: (path: string, fd: number, buffer: Buffer, length: number, position: number, cb: Cb) => void
+  release?: (path: string, fd: number, cb: Cb) => void
+  releasedir?: (path: string, fd: number, cb: Cb) => void
+  create?: (path: string, mode: any, cb: Cb) => void
+  unlink?: (path: string, cb: Cb) => void
+  rename?: (src: string, dest: string, cb: Cb) => void
+  link?: (src: string, dest: string, cb: Cb) => void
+  symlink?: (src: string, dest: string, cb: Cb) => void
+  mkdir?: (path: string, mode: any, cb: Cb) => void
+  rmdir?: (path: string, cb: Cb) => void
+}
+export interface Opts {
+  displayFolder?: string | boolean,
+  debug?: boolean,
+  force?: boolean,
+  mkdir?: boolean,
+  timeout?: boolean,
+}
+export default class Fuse extends Nanoresource {
+  static EPERM: number = -1
+  static beforeMount: any = beforeMount
+  static beforeUnmount: any = beforeUnmount
+  static configure: any = configure
+  static unconfigure: any = unconfigure
+  static isConfigured: any = isConfigured
+  static ENOENT: number = -2
+  static ESRCH: number = -3
+  static EINTR: number = -4
+  static EIO: number = -5
+  static ENXIO: number = -6
+  static E2BIG: number = -7
+  static ENOEXEC: number = -8
+  static EBADF: number = -9
+  static ECHILD: number = -10
+  static EAGAIN: number = -11
+  static ENOMEM: number = -12
+  static EACCES: number = -13
+  static EFAULT: number = -14
+  static ENOTBLK: number = -15
+  static EBUSY: number = -16
+  static EEXIST: number = -17
+  static EXDEV: number = -18
+  static ENODEV: number = -19
+  static ENOTDIR: number = -20
+  static EISDIR: number = -21
+  static EINVAL: number = -22
+  static ENFILE: number = -23
+  static EMFILE: number = -24
+  static ENOTTY: number = -25
+  static ETXTBSY: number = -26
+  static EFBIG: number = -27
+  static ENOSPC: number = -28
+  static ESPIPE: number = -29
+  static EROFS: number = -30
+  static EMLINK: number = -31
+  static EPIPE: number = -32
+  static EDOM: number = -33
+  static ERANGE: number = -34
+  static EDEADLK: number = -35
+  static ENAMETOOLONG: number = -36
+  static ENOLCK: number = -37
+  static ENOSYS: number = -38
+  static ENOTEMPTY: number = -39
+  static ELOOP: number = -40
+  static EWOULDBLOCK: number = -11
+  static ENOMSG: number = -42
+  static EIDRM: number = -43
+  static ECHRNG: number = -44
+  static EL2NSYNC: number = -45
+  static EL3HLT: number = -46
+  static EL3RST: number = -47
+  static ELNRNG: number = -48
+  static EUNATCH: number = -49
+  static ENOCSI: number = -50
+  static EL2HLT: number = -51
+  static EBADE: number = -52
+  static EBADR: number = -53
+  static EXFULL: number = -54
+  static ENOANO: number = -55
+  static EBADRQC: number = -56
+  static EBADSLT: number = -57
+  static EDEADLOCK: number = -35
+  static EBFONT: number = -59
+  static ENOSTR: number = -60
+  static ENODATA: number = -61
+  static ETIME: number = -62
+  static ENOSR: number = -63
+  static ENONET: number = -64
+  static ENOPKG: number = -65
+  static EREMOTE: number = -66
+  static ENOLINK: number = -67
+  static EADV: number = -68
+  static ESRMNT: number = -69
+  static ECOMM: number = -70
+  static EPROTO: number = -71
+  static EMULTIHOP: number = -72
+  static EDOTDOT: number = -73
+  static EBADMSG: number = -74
+  static EOVERFLOW: number = -75
+  static ENOTUNIQ: number = -76
+  static EBADFD: number = -77
+  static EREMCHG: number = -78
+  static ELIBACC: number = -79
+  static ELIBBAD: number = -80
+  static ELIBSCN: number = -81
+  static ELIBMAX: number = -82
+  static ELIBEXEC: number = -83
+  static EILSEQ: number = -84
+  static ERESTART: number = -85
+  static ESTRPIPE: number = -86
+  static EUSERS: number = -87
+  static ENOTSOCK: number = -88
+  static EDESTADDRREQ: number = -89
+  static EMSGSIZE: number = -90
+  static EPROTOTYPE: number = -91
+  static ENOPROTOOPT: number = -92
+  static EPROTONOSUPPORT: number = -93
+  static ESOCKTNOSUPPORT: number = -94
+  static EOPNOTSUPP: number = -95
+  static EPFNOSUPPORT: number = -96
+  static EAFNOSUPPORT: number = -97
+  static EADDRINUSE: number = -98
+  static EADDRNOTAVAIL: number = -99
+  static ENETDOWN: number = -100
+  static ENETUNREACH: number = -101
+  static ENETRESET: number = -102
+  static ECONNABORTED: number = -103
+  static ECONNRESET: number = -104
+  static ENOBUFS: number = -105
+  static EISCONN: number = -106
+  static ENOTCONN: number = -107
+  static ESHUTDOWN: number = -108
+  static ETOOMANYREFS: number = -109
+  static ETIMEDOUT: number = -110
+  static ECONNREFUSED: number = -111
+  static EHOSTDOWN: number = -112
+  static EHOSTUNREACH: number = -113
+  static EALREADY: number = -114
+  static EINPROGRESS: number = -115
+  static ESTALE: number = -116
+  static EUCLEAN: number = -117
+  static ENOTNAM: number = -118
+  static ENAVAIL: number = -119
+  static EISNAM: number = -120
+  static EREMOTEIO: number = -121
+  static EDQUOT: number = -122
+  static ENOMEDIUM: number = -123
+  static EMEDIUMTYPE: number = -124
 
-class Fuse extends Nanoresource {
-  constructor (mnt, ops, opts = {}) {
+  constructor(mnt: string, ops: Ops, opts: Opts = {}) {
     super()
 
     this.opts = opts
@@ -158,7 +333,7 @@ class Fuse extends Nanoresource {
     this._sync = true
   }
 
-  _getImplementedArray () {
+  _getImplementedArray() {
     const implemented = new Uint32Array(35)
     for (const impl of this._implemented) {
       implemented[impl] = 1
@@ -166,10 +341,10 @@ class Fuse extends Nanoresource {
     return implemented
   }
 
-  _fuseOptions () {
+  _fuseOptions() {
     const options = []
 
-    if ((/\*|(^,)fuse-bindings(,$)/.test(process.env.DEBUG)) || this.opts.debug) options.push('debug')
+    if ((/\*|(^,)fuse-bindings(,$)/.test(process.env?.DEBUG ? process.env?.DEBUG : "")) || this.opts.debug) options.push('debug')
     if (this.opts.allowOther) options.push('allow_other')
     if (this.opts.allowRoot) options.push('allow_root')
     if (this.opts.autoUnmount) options.push('auto_unmount')
@@ -201,13 +376,13 @@ class Fuse extends Nanoresource {
     return options.length ? '-o' + options.join(',') : ''
   }
 
-  _malloc (size) {
+  _malloc(size: number) {
     const buf = Buffer.alloc(size)
     this._threads.add(buf)
     return buf
   }
 
-  _makeHandlerArray () {
+  _makeHandlerArray() {
     const self = this
     const handlers = new Array(OpcodesAndDefaults.size)
 
@@ -220,7 +395,7 @@ class Fuse extends Nanoresource {
 
     return handlers
 
-    function makeHandler (name, op, defaults, nativeSignal) {
+    function makeHandler(name: string, op: any, defaults: any, nativeSignal: any) {
       let to = self.timeout
       if (typeof to === 'object' && to) {
         const defaultTimeout = to.default || DEFAULT_TIMEOUT
@@ -228,7 +403,7 @@ class Fuse extends Nanoresource {
         if (!to && to !== false) to = defaultTimeout
       }
 
-      return function (nativeHandler, opCode, ...args) {
+      return function (nativeHandler: any, opCode: any, ...args: defaultArgs) {
         const sig = signal.bind(null, nativeHandler)
         const input = [...args]
         const boundSignal = to ? autoTimeout(sig, input) : sig
@@ -237,7 +412,7 @@ class Fuse extends Nanoresource {
         return self[funcName].apply(self, [boundSignal, ...args])
       }
 
-      function signal (nativeHandler, err, ...args) {
+      function signal(nativeHandler: any, err: any, ...args: defaultArgs) {
         var arr = [nativeHandler, err, ...args]
 
         if (defaults) {
@@ -248,12 +423,12 @@ class Fuse extends Nanoresource {
         return process.nextTick(nativeSignal, ...arr)
       }
 
-      function autoTimeout (cb, input) {
+      function autoTimeout(cb: any, input: any) {
         let called = false
         const timeout = setTimeout(timeoutWrap, to, TIMEOUT_ERRNO)
         return timeoutWrap
 
-        function timeoutWrap (err, ...args) {
+        function timeoutWrap(err: any, ...args: defaultArgs) {
           if (called) return
           called = true
 
@@ -281,10 +456,10 @@ class Fuse extends Nanoresource {
 
   // Static methods
 
-  static unmount (mnt, cb) {
+  static unmount(mnt: string, cb: Cb) {
     mnt = JSON.stringify(mnt)
     const cmd = IS_OSX ? `diskutil unmount force ${mnt}` : `fusermount -uz ${mnt}`
-    exec(cmd, err => {
+    exec(cmd, (err: any) => {
       if (err) return cb(err)
       return cb(null)
     })
@@ -294,18 +469,18 @@ class Fuse extends Nanoresource {
 
   // Lifecycle methods
 
-  _open (cb) {
+  _open(cb: any) {
     const self = this
 
     if (this._force) {
-      return fs.stat(path.join(this.mnt, 'test'), (err, st) => {
+      return fs.stat(path.join(this.mnt, 'test'), (err: any, st: any) => {
         if (err && (err.errno === ENOTCONN || err.errno === Fuse.ENXIO)) return Fuse.unmount(this.mnt, open)
         return open()
       })
     }
     return open()
 
-    function open () {
+    function open() {
       // If there was an unmount error, continue attempting to mount (this is the best we can do)
       self._thread = Buffer.alloc(binding.sizeof_fuse_thread_t)
       self._openCallback = cb
@@ -313,13 +488,13 @@ class Fuse extends Nanoresource {
       const opts = self._fuseOptions()
       const implemented = self._getImplementedArray()
 
-      return fs.stat(self.mnt, (err, stat) => {
+      return fs.stat(self.mnt, (err: any, stat: any) => {
         if (err && err.errno !== -2) return cb(err)
         if (err) {
           if (!self._mkdir) return cb(new Error('Mountpoint does not exist'))
-          return fs.mkdir(self.mnt, { recursive: true }, err => {
+          return fs.mkdir(self.mnt, { recursive: true }, (err: Error) => {
             if (err) return cb(err)
-            fs.stat(self.mnt, (err, stat) => {
+            fs.stat(self.mnt, (err: any, stat: any) => {
               if (err) return cb(err)
               return onexists(stat)
             })
@@ -329,8 +504,8 @@ class Fuse extends Nanoresource {
         return onexists(stat)
       })
 
-      function onexists (stat) {
-        fs.stat(path.join(self.mnt, '..'), (_, parent) => {
+      function onexists(stat: any) {
+        fs.stat(path.join(self.mnt, '..'), (_: any, parent: any) => {
           if (parent && parent.dev !== stat.dev) return cb(new Error('Mountpoint in use'))
           try {
             // TODO: asyncify
@@ -343,10 +518,10 @@ class Fuse extends Nanoresource {
     }
   }
 
-  _close (cb) {
+  _close(cb: any) {
     const self = this
 
-    Fuse.unmount(this.mnt, err => {
+    Fuse.unmount(this.mnt, (err: any) => {
       if (err) {
         err.unmountFailure = true
         return cb(err)
@@ -354,7 +529,7 @@ class Fuse extends Nanoresource {
       nativeUnmount()
     })
 
-    function nativeUnmount () {
+    function nativeUnmount() {
       try {
         binding.fuse_native_unmount(self.mnt, self._thread)
       } catch (err) {
@@ -366,7 +541,7 @@ class Fuse extends Nanoresource {
 
   // Handlers
 
-  _op_init (signal) {
+  _op_init(signal: any) {
     if (this._openCallback) {
       process.nextTick(this._openCallback, null)
       this._openCallback = null
@@ -375,30 +550,30 @@ class Fuse extends Nanoresource {
       signal(0)
       return
     }
-    this.ops.init(err => {
+    this.ops.init((err: any) => {
       return signal(err)
     })
   }
 
-  _op_error (signal) {
+  _op_error(signal: any) {
     if (!this.ops.error) {
       signal(0)
       return
     }
-    this.ops.error(err => {
+    this.ops.error((err: any) => {
       return signal(err)
     })
   }
 
-  _op_statfs (signal, path) {
-    this.ops.statfs(path, (err, statfs) => {
+  _op_statfs(signal: any, path: any) {
+    this.ops.statfs(path, (err: any, statfs: any) => {
       if (err) return signal(err)
       const arr = getStatfsArray(statfs)
       return signal(0, arr)
     })
   }
 
-  _op_getattr (signal, path) {
+  _op_getattr(signal: any, path: any) {
     if (!this.ops.getattr) {
       if (path !== '/') {
         signal(Fuse.EPERM)
@@ -408,13 +583,13 @@ class Fuse extends Nanoresource {
       return
     }
 
-    this.ops.getattr(path, (err, stat) => {
+    this.ops.getattr(path, (err: any, stat: any) => {
       if (err) return signal(err, getStatArray())
       return signal(0, getStatArray(stat))
     })
   }
 
-  _op_fgetattr (signal, path, fd) {
+  _op_fgetattr(signal: any, path: any, fd: any) {
     if (!this.ops.fgetattr) {
       if (path !== '/') {
         signal(Fuse.EPERM)
@@ -423,84 +598,84 @@ class Fuse extends Nanoresource {
       }
       return
     }
-    this.ops.getattr(path, (err, stat) => {
+    this.ops.getattr(path, (err: any, stat: any) => {
       if (err) return signal(err)
       return signal(0, getStatArray(stat))
     })
   }
 
-  _op_access (signal, path, mode) {
-    this.ops.access(path, mode, err => {
+  _op_access(signal: any, path: any, mode: any) {
+    this.ops.access(path, mode, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_open (signal, path, flags) {
-    this.ops.open(path, flags, (err, fd) => {
+  _op_open(signal: any, path: any, flags: any) {
+    this.ops.open(path, flags, (err: any, fd: any) => {
       return signal(err, fd)
     })
   }
 
-  _op_opendir (signal, path, flags) {
-    this.ops.opendir(path, flags, (err, fd) => {
+  _op_opendir(signal: any, path: any, flags: any) {
+    this.ops.opendir(path, flags, (err: any, fd: any) => {
       return signal(err, fd)
     })
   }
 
-  _op_create (signal, path, mode) {
-    this.ops.create(path, mode, (err, fd) => {
+  _op_create(signal: any, path: any, mode: any) {
+    this.ops.create(path, mode, (err: any, fd: any) => {
       return signal(err, fd)
     })
   }
 
-  _op_utimens (signal, path, atimeLow, atimeHigh, mtimeLow, mtimeHigh) {
+  _op_utimens(signal: any, path: any, atimeLow: any, atimeHigh: any, mtimeLow: any, mtimeHigh: any) {
     const atime = getDoubleArg(atimeLow, atimeHigh)
     const mtime = getDoubleArg(mtimeLow, mtimeHigh)
-    this.ops.utimens(path, atime, mtime, err => {
+    this.ops.utimens(path, atime, mtime, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_release (signal, path, fd) {
-    this.ops.release(path, fd, err => {
+  _op_release(signal: any, path: any, fd: any) {
+    this.ops.release(path, fd, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_releasedir (signal, path, fd) {
-    this.ops.releasedir(path, fd, err => {
+  _op_releasedir(signal: any, path: any, fd: any) {
+    this.ops.releasedir(path, fd, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_read (signal, path, fd, buf, len, offsetLow, offsetHigh) {
-    this.ops.read(path, fd, buf, len, getDoubleArg(offsetLow, offsetHigh), (err, bytesRead) => {
+  _op_read(signal: any, path: any, fd: any, buf: any, len: any, offsetLow: any, offsetHigh: any) {
+    this.ops.read(path, fd, buf, len, getDoubleArg(offsetLow, offsetHigh), (err: any, bytesRead: any) => {
       return signal(err, bytesRead || 0, buf.buffer)
     })
   }
 
-  _op_write (signal, path, fd, buf, len, offsetLow, offsetHigh) {
-    this.ops.write(path, fd, buf, len, getDoubleArg(offsetLow, offsetHigh), (err, bytesWritten) => {
+  _op_write(signal: any, path: any, fd: any, buf: any, len: any, offsetLow: any, offsetHigh: any) {
+    this.ops.write(path, fd, buf, len, getDoubleArg(offsetLow, offsetHigh), (err: any, bytesWritten: any) => {
       return signal(err, bytesWritten || 0, buf.buffer)
     })
   }
 
-  _op_readdir (signal, path) {
-    this.ops.readdir(path, (err, names, stats) => {
+  _op_readdir(signal: any, path: any) {
+    this.ops.readdir(path, (err: any, names: any, stats: any) => {
       if (err) return signal(err)
       if (stats) stats = stats.map(getStatArray)
       return signal(0, names, stats || [])
     })
   }
 
-  _op_setxattr (signal, path, name, value, position, flags) {
-    this.ops.setxattr(path, name, value, position, flags, err => {
+  _op_setxattr(signal: any, path: any, name: any, value: any, position: any, flags: any) {
+    this.ops.setxattr(path, name, value, position, flags, (err: any) => {
       return signal(err, value.buffer)
     })
   }
 
-  _op_getxattr (signal, path, name, valueBuf, position) {
-    this.ops.getxattr(path, name, position, (err, value) => {
+  _op_getxattr(signal: any, path: any, name: any, valueBuf: any, position: any) {
+    this.ops.getxattr(path, name, position, (err: any, value: any) => {
       if (!err) {
         if (!value) return signal(IS_OSX ? -93 : -61, valueBuf.buffer)
         value.copy(valueBuf)
@@ -510,8 +685,8 @@ class Fuse extends Nanoresource {
     })
   }
 
-  _op_listxattr (signal, path, listBuf) {
-    this.ops.listxattr(path, (err, list) => {
+  _op_listxattr(signal: any, path: any, listBuf: any) {
+    this.ops.listxattr(path, (err: any, list: any) => {
       if (list && !err) {
         if (!listBuf.length) {
           let size = 0
@@ -533,254 +708,137 @@ class Fuse extends Nanoresource {
     })
   }
 
-  _op_removexattr (signal, path, name) {
-    this.ops.removexattr(path, name, err => {
+  _op_removexattr(signal: any, path: any, name: any) {
+    this.ops.removexattr(path, name, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_flush (signal, path, fd) {
-    this.ops.flush(path, fd, err => {
+  _op_flush(signal: any, path: any, fd: any) {
+    this.ops.flush(path, fd, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_fsync (signal, path, datasync, fd) {
-    this.ops.fsync(path, datasync, fd, err => {
+  _op_fsync(signal: any, path: any, datasync: any, fd: any) {
+    this.ops.fsync(path, datasync, fd, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_fsyncdir (signal, path, datasync, fd) {
-    this.ops.fsyncdir(path, datasync, fd, err => {
+  _op_fsyncdir(signal: any, path: any, datasync: any, fd: any) {
+    this.ops.fsyncdir(path, datasync, fd, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_truncate (signal, path, sizeLow, sizeHigh) {
+  _op_truncate(signal: any, path: any, sizeLow: any, sizeHigh: any) {
     const size = getDoubleArg(sizeLow, sizeHigh)
-    this.ops.truncate(path, size, err => {
+    this.ops.truncate(path, size, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_ftruncate (signal, path, fd, sizeLow, sizeHigh) {
+  _op_ftruncate(signal: any, path: any, fd: any, sizeLow: any, sizeHigh: any) {
     const size = getDoubleArg(sizeLow, sizeHigh)
-    this.ops.ftruncate(path, fd, size, err => {
+    this.ops.ftruncate(path, fd, size, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_readlink (signal, path) {
-    this.ops.readlink(path, (err, linkname) => {
+  _op_readlink(signal: any, path: any) {
+    this.ops.readlink(path, (err: any, linkname: any) => {
       return signal(err, linkname)
     })
   }
 
-  _op_chown (signal, path, uid, gid) {
-    this.ops.chown(path, uid, gid, err => {
+  _op_chown(signal: any, path: any, uid: any, gid: any) {
+    this.ops.chown(path, uid, gid, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_chmod (signal, path, mode) {
-    this.ops.chmod(path, mode, err => {
+  _op_chmod(signal: any, path: any, mode: any) {
+    this.ops.chmod(path, mode, (err: any) => {
       return signal(err)
     })
   }
 
-  _op_mknod (signal, path, mode, dev) {
-    this.ops.mknod(path, mode, dev, err => {
+  _op_mknod(signal: any, path: string, mode: any, dev: any) {
+    this.ops.mknod(path, mode, dev, (err: Error) => {
       return signal(err)
     })
   }
 
-  _op_unlink (signal, path) {
-    this.ops.unlink(path, err => {
+  _op_unlink(signal: any, path: string) {
+    this.ops.unlink(path, (err: Error) => {
       return signal(err)
     })
   }
 
-  _op_rename (signal, src, dest) {
-    this.ops.rename(src, dest, err => {
+  _op_rename(signal: any, src: any, dest: any) {
+    this.ops.rename(src, dest, (err: Error) => {
       return signal(err)
     })
   }
 
-  _op_link (signal, src, dest) {
-    this.ops.link(src, dest, err => {
+  _op_link(signal: any, src: any, dest: any) {
+    this.ops.link(src, dest, (err: Error) => {
       return signal(err)
     })
   }
 
-  _op_symlink (signal, src, dest) {
-    this.ops.symlink(src, dest, err => {
+  _op_symlink(signal: any, src: any, dest: any) {
+    this.ops.symlink(src, dest, (err: Error) => {
       return signal(err)
     })
   }
 
-  _op_mkdir (signal, path, mode) {
-    this.ops.mkdir(path, mode, err => {
+  _op_mkdir(signal: any, path: string, mode: any) {
+    this.ops.mkdir(path, mode, (err: Error) => {
       return signal(err)
     })
   }
 
-  _op_rmdir (signal, path) {
-    this.ops.rmdir(path, err => {
+  _op_rmdir(signal: any, path: string) {
+    this.ops.rmdir(path, (err: Error) => {
       return signal(err)
     })
   }
 
   // Public API
 
-  mount (cb) {
+  mount(cb: any) {
     return this.open(cb)
   }
 
-  unmount (cb) {
+  unmount(cb: any) {
     return this.close(cb)
   }
 
-  errno (code) {
+  errno(code: any) {
     return (code && Fuse[code.toUpperCase()]) || -1
   }
 }
 
-Fuse.EPERM = -1
-Fuse.ENOENT = -2
-Fuse.ESRCH = -3
-Fuse.EINTR = -4
-Fuse.EIO = -5
-Fuse.ENXIO = -6
-Fuse.E2BIG = -7
-Fuse.ENOEXEC = -8
-Fuse.EBADF = -9
-Fuse.ECHILD = -10
-Fuse.EAGAIN = -11
-Fuse.ENOMEM = -12
-Fuse.EACCES = -13
-Fuse.EFAULT = -14
-Fuse.ENOTBLK = -15
-Fuse.EBUSY = -16
-Fuse.EEXIST = -17
-Fuse.EXDEV = -18
-Fuse.ENODEV = -19
-Fuse.ENOTDIR = -20
-Fuse.EISDIR = -21
-Fuse.EINVAL = -22
-Fuse.ENFILE = -23
-Fuse.EMFILE = -24
-Fuse.ENOTTY = -25
-Fuse.ETXTBSY = -26
-Fuse.EFBIG = -27
-Fuse.ENOSPC = -28
-Fuse.ESPIPE = -29
-Fuse.EROFS = -30
-Fuse.EMLINK = -31
-Fuse.EPIPE = -32
-Fuse.EDOM = -33
-Fuse.ERANGE = -34
-Fuse.EDEADLK = -35
-Fuse.ENAMETOOLONG = -36
-Fuse.ENOLCK = -37
-Fuse.ENOSYS = -38
-Fuse.ENOTEMPTY = -39
-Fuse.ELOOP = -40
-Fuse.EWOULDBLOCK = -11
-Fuse.ENOMSG = -42
-Fuse.EIDRM = -43
-Fuse.ECHRNG = -44
-Fuse.EL2NSYNC = -45
-Fuse.EL3HLT = -46
-Fuse.EL3RST = -47
-Fuse.ELNRNG = -48
-Fuse.EUNATCH = -49
-Fuse.ENOCSI = -50
-Fuse.EL2HLT = -51
-Fuse.EBADE = -52
-Fuse.EBADR = -53
-Fuse.EXFULL = -54
-Fuse.ENOANO = -55
-Fuse.EBADRQC = -56
-Fuse.EBADSLT = -57
-Fuse.EDEADLOCK = -35
-Fuse.EBFONT = -59
-Fuse.ENOSTR = -60
-Fuse.ENODATA = -61
-Fuse.ETIME = -62
-Fuse.ENOSR = -63
-Fuse.ENONET = -64
-Fuse.ENOPKG = -65
-Fuse.EREMOTE = -66
-Fuse.ENOLINK = -67
-Fuse.EADV = -68
-Fuse.ESRMNT = -69
-Fuse.ECOMM = -70
-Fuse.EPROTO = -71
-Fuse.EMULTIHOP = -72
-Fuse.EDOTDOT = -73
-Fuse.EBADMSG = -74
-Fuse.EOVERFLOW = -75
-Fuse.ENOTUNIQ = -76
-Fuse.EBADFD = -77
-Fuse.EREMCHG = -78
-Fuse.ELIBACC = -79
-Fuse.ELIBBAD = -80
-Fuse.ELIBSCN = -81
-Fuse.ELIBMAX = -82
-Fuse.ELIBEXEC = -83
-Fuse.EILSEQ = -84
-Fuse.ERESTART = -85
-Fuse.ESTRPIPE = -86
-Fuse.EUSERS = -87
-Fuse.ENOTSOCK = -88
-Fuse.EDESTADDRREQ = -89
-Fuse.EMSGSIZE = -90
-Fuse.EPROTOTYPE = -91
-Fuse.ENOPROTOOPT = -92
-Fuse.EPROTONOSUPPORT = -93
-Fuse.ESOCKTNOSUPPORT = -94
-Fuse.EOPNOTSUPP = -95
-Fuse.EPFNOSUPPORT = -96
-Fuse.EAFNOSUPPORT = -97
-Fuse.EADDRINUSE = -98
-Fuse.EADDRNOTAVAIL = -99
-Fuse.ENETDOWN = -100
-Fuse.ENETUNREACH = -101
-Fuse.ENETRESET = -102
-Fuse.ECONNABORTED = -103
-Fuse.ECONNRESET = -104
-Fuse.ENOBUFS = -105
-Fuse.EISCONN = -106
-Fuse.ENOTCONN = -107
-Fuse.ESHUTDOWN = -108
-Fuse.ETOOMANYREFS = -109
-Fuse.ETIMEDOUT = -110
-Fuse.ECONNREFUSED = -111
-Fuse.EHOSTDOWN = -112
-Fuse.EHOSTUNREACH = -113
-Fuse.EALREADY = -114
-Fuse.EINPROGRESS = -115
-Fuse.ESTALE = -116
-Fuse.EUCLEAN = -117
-Fuse.ENOTNAM = -118
-Fuse.ENAVAIL = -119
-Fuse.EISNAM = -120
-Fuse.EREMOTEIO = -121
-Fuse.EDQUOT = -122
-Fuse.ENOMEDIUM = -123
-Fuse.EMEDIUMTYPE = -124
 
 // Forward configuration functions through the exported class.
-Fuse.beforeMount = beforeMount
-Fuse.beforeUnmount = beforeUnmount
-Fuse.configure = configure
-Fuse.unconfigure = unconfigure
-Fuse.isConfigured = isConfigured
 
-module.exports = Fuse
+export interface StatFs {
+  bsize:number
+  frsize:number
+  blocks:number
+  bfree:number
+  bavail:number
+  files:number
+  ffree:number
+  favail:number
+  fsid:number
+  flag:number
+  namemax:number
+}
 
-function getStatfsArray (statfs) {
+export function getStatfsArray(statfs?: any) {
   const ints = new Uint32Array(11)
 
   ints[0] = (statfs && statfs.bsize) || 0
@@ -798,22 +856,36 @@ function getStatfsArray (statfs) {
   return ints
 }
 
-function setDoubleInt (arr, idx, num) {
+function setDoubleInt(arr: any, idx: any, num: any) {
   arr[idx] = num % 4294967296
   arr[idx + 1] = (num - arr[idx]) / 4294967296
 }
 
-function getDoubleArg (a, b) {
+function getDoubleArg(a: any, b: any) {
   return a + b * 4294967296
 }
 
-function toDateMS (st) {
+export function toDateMS(st?: number|Date) {
   if (typeof st === 'number') return st
   if (!st) return Date.now()
   return st.getTime()
 }
-
-function getStatArray (stat) {
+export interface Stat {
+  mode?:number,
+  uid?:number,
+  gid?:number,
+  size?:number,
+  dev?:number,
+  nlink?:number,
+  ino?:number,
+  rdev?:number,
+  blksize?:number,
+  blocks?:number,
+  atime?:Date,
+  mtime?:Date,
+  ctime?:Date,
+}
+export function getStatArray(stat?: Stat) {
   const ints = new Uint32Array(18)
 
   ints[0] = (stat && stat.mode) || 0

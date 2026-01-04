@@ -1,2 +1,4 @@
 node_modules
 build
+mnt
+package-lock.json

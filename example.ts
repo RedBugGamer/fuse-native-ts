@@ -1,7 +1,8 @@
-const Fuse = require('./')
-
-const ops = {
-  readdir: function (path, cb) {
+import Fuse, { Ops } from './index'
+// const Fuse = require('./')
+type Cb = (code:number,value?:any) => any
+const ops:Ops = {
+  readdir: function (path:string, cb:Cb) {
     console.log('readdir(%s)', path)
     if (path === '/') return process.nextTick(cb, 0, ['test'], [
       {
@@ -22,7 +23,7 @@ const ops = {
     return process.nextTick(cb, 0)
   },
   */
-  getattr: function (path, cb) {
+  getattr: function (path:String, cb:Cb) {
     console.log('getattr(%s)', path)
     if (path === '/') {
       return process.nextTick(cb, 0, {
@@ -52,11 +53,11 @@ const ops = {
 
     return process.nextTick(cb, Fuse.ENOENT)
   },
-  open: function (path, flags, cb) {
+  open: function (path:string, flags:number, cb:Cb) {
     console.log('open(%s, %d)', path, flags)
     return process.nextTick(cb, 0, 42) // 42 is an fd
   },
-  read: function (path, fd, buf, len, pos, cb) {
+  read: function (path:string, fd:number, buf:Buffer, len:number, pos:number, cb:Cb) {
     console.log('read(%s, %d, %d, %d)', path, fd, len, pos)
     var str = 'hello world\n'.slice(pos)
     if (!str) return process.nextTick(cb, 0)
@@ -66,13 +67,13 @@ const ops = {
 }
 
 const fuse = new Fuse('./mnt', ops, { debug: true, displayFolder: true })
-fuse.mount(err => {
+fuse.mount((err:Error) => {
   if (err) throw err
   console.log('filesystem mounted on ' + fuse.mnt)
 })
 
 process.once('SIGINT', function () {
-  fuse.unmount(err => {
+  fuse.unmount((err:Error) => {
     if (err) {
       console.log('filesystem at ' + fuse.mnt + ' not unmounted', err)
     } else {
